@@ -22,7 +22,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         restart: unless-stopped
         networks:
-            - devlocalhost
+            - local
 
     mariadb:
         image: mariadb:10.11
@@ -38,12 +38,14 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         volumes:
             - ./docker-data/mariadb:/var/lib/mysql
+        command: --max_allowed_packet=1073741824 # 1GB
+        #docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database bd_destino' < /home/.../dump.sql
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-ppassword"]
             retries: 3
             timeout: 5s
         networks:
-            - devlocalhost
+            - local
         restart: unless-stopped
 
     redis:
@@ -58,7 +60,7 @@ services:
             retries: 3
             timeout: 5s
         networks:
-            - devlocalhost
+            - local
         restart: on-failure
 
     soketi:
@@ -74,7 +76,7 @@ services:
             - 6001:6001
             - 9601:9601
         networks:
-            - devlocalhost
+            - local
         restart: on-failure
 
     meilisearch:
@@ -89,7 +91,7 @@ services:
             retries: 3
             timeout: 5s
         networks:
-            - devlocalhost
+            - local
         restart: on-failure
 
     mailpit:
@@ -99,7 +101,7 @@ services:
             - 1025:1025
             - 8025:8025
         networks:
-            - devlocalhost
+            - local
         restart: on-failure
 
     minio:
@@ -119,8 +121,8 @@ services:
             retries: 3
             timeout: 5s
         networks:
-            - devlocalhost
+            - local
         restart: on-failure
 networks:
-    devlocalhost:
+    local:
         driver: bridge
