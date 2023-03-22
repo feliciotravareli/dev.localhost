@@ -16,13 +16,16 @@ services:
         container_name: portainer
         ports:
             - 9443:9443
+        command: --admin-password '$$2y$$05$$GIREErZJylvl7EnNeBO8nu9FgR5aDsa4oG5kNpSGPMNkW.GG6/9TS' #password
         volumes:
             - ./docker-data/portainer:/data
             - /var/run/docker.sock:/var/run/docker.sock
         restart: unless-stopped
+        networks:
+            - devlocalhost
 
     mariadb:
-        image: mariadb:10
+        image: mariadb:10.11
         container_name: mariadb
         ports:
             - 3306:3306
@@ -35,23 +38,27 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         volumes:
             - ./docker-data/mariadb:/var/lib/mysql
-        restart: unless-stopped
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-ppassword"]
             retries: 3
             timeout: 5s
+        networks:
+            - devlocalhost
+        restart: unless-stopped
 
     redis:
         image: redis:alpine
         container_name: redis
         ports:
             - 6379:6379
+        volumes:
+            - ./docker-data/redis:/data
         healthcheck:
             test: [ "CMD", "redis-cli", "ping" ]
             retries: 3
             timeout: 5s
-        volumes:
-            - ./docker-data/redis:/data
+        networks:
+            - devlocalhost
         restart: on-failure
 
     soketi:
@@ -66,6 +73,8 @@ services:
         ports:
             - 6001:6001
             - 9601:9601
+        networks:
+            - devlocalhost
         restart: on-failure
 
     meilisearch:
@@ -79,6 +88,8 @@ services:
             test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
             retries: 3
             timeout: 5s
+        networks:
+            - devlocalhost
         restart: on-failure
 
     mailpit:
@@ -87,6 +98,8 @@ services:
         ports:
             - 1025:1025
             - 8025:8025
+        networks:
+            - devlocalhost
         restart: on-failure
 
     minio:
@@ -105,4 +118,9 @@ services:
             test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
             retries: 3
             timeout: 5s
+        networks:
+            - devlocalhost
         restart: on-failure
+networks:
+    devlocalhost:
+        driver: bridge
