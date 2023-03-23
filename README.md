@@ -46,3 +46,25 @@ Hosts > Proxy Hosts > Add Proxy Host
  - Forward Port: 9443
 ### 3.4.2. Na aba "SSL" selecionar o certificado criado no passo _3.2_ e salvar
 ### 3.4.3. O endereço [https://portainer.localhost](https://portainer.localhost) deve estar acessível e sendo servido por https
+
+
+
+
+
+### Windows Subsystem for Linux (WSL2)
+
+https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-arm64.exe
+
+On WSL2, running `mkcert -install` will not install the rootCA in the Windows certificate store. Users of WSL2 should extract the certificate (location given by `mkcert -CAROOT`) and use the Windows binary mkcert to install the rootCA.
+
+To do this, copy the rootCA as a pem file to (for example) `Desktop/Certs`; run `cmd.exe` as Administrator and:
+
+```
+C:\Users\user\Desktop\Certs>set CAROOT=\\wsl.localhost\Ubuntu\home\felicio\.local\share\mkcert
+C:\Users\user\Desktop\Certs>mkcert.exe -CAROOT
+c:\Users\user\Desktop\Certs
+C:\Users\user\Desktop\Certs>mkcert.exe -install
+Using the local CA at "c:\Users\user\Desktop\Certs" ✨
+The local CA is now installed in the system trust store! ⚡️
+Note: Firefox support is not available on your platform. ℹ️
+```

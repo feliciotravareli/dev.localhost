@@ -1,16 +1,38 @@
 version: "3"
 services:
-    proxy:
-        image: jc21/nginx-proxy-manager:latest
-        container_name: proxy-manager
-        environment:
-            DISABLE_IPV6: 'true'
-        volumes:
-            - ./docker-data/nginx-proxy-manager:/data
-            - ./letsencrypt:/etc/letsencrypt
+    traefik:
+        # The official v2 Traefik docker image
+        image: traefik:v2.9
+        container_name: traefik
         restart: unless-stopped
-        network_mode: "host"
-
+        security_opt:
+            - no-new-privileges:true
+        ports:
+            - "80:80" # The HTTP port
+            - "443:443" # The HTTPS port
+            - "8080:8080" # The Web UI (enabled by --api.insecure=true)
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro # So that Traefik can listen to the Docker events
+            - ./config/static.yml:/etc/traefik/traefik.yml:ro
+            - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
+            - ./certs:/etc/certs:ro
+        networks:
+            - proxy
+    # proxy:
+    #     image: jc21/nginx-proxy-manager:latest
+    #     container_name: proxy-manager
+    #     environment:
+    #         DISABLE_IPV6: 'true'
+    #     ports:
+    #         - 80:80
+    #         - 81:81
+    #         - 443:443
+    #     volumes:
+    #         - ./docker-data/nginx-proxy-manager:/data
+    #         - ./letsencrypt:/etc/letsencrypt
+    #     restart: unless-stopped
+    #     networks:
+    #         - proxy
     portainer:
         image: portainer/portainer-ce:latest
         container_name: portainer
@@ -20,9 +42,16 @@ services:
         volumes:
             - ./docker-data/portainer:/data
             - /var/run/docker.sock:/var/run/docker.sock
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=proxy"
+            - "traefik.http.routers.portainer.tls=true"
+            - "traefik.http.routers.portainer.rule=Host(`portainer.docker.localhost`)"
+            - "traefik.http.services.portainer.loadbalancer.server.scheme=https"
+            - "traefik.http.services.portainer.loadbalancer.server.port=9443"
         restart: unless-stopped
         networks:
-            - local
+            - proxy
 
     mariadb:
         image: mariadb:10.11
@@ -45,7 +74,7 @@ services:
             retries: 3
             timeout: 5s
         networks:
-            - local
+            - proxy
         restart: unless-stopped
 
     redis:
@@ -60,7 +89,7 @@ services:
             retries: 3
             timeout: 5s
         networks:
-            - local
+            - proxy
         restart: on-failure
 
     soketi:
@@ -76,7 +105,7 @@ services:
             - 6001:6001
             - 9601:9601
         networks:
-            - local
+            - proxy
         restart: on-failure
 
     meilisearch:
@@ -91,7 +120,13 @@ services:
             retries: 3
             timeout: 5s
         networks:
-            - local
+            - proxy
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=proxy"
+            - "traefik.http.routers.meilisearch.tls=true"
+            - "traefik.http.routers.meilisearch.rule=Host(`meilisearch.docker.localhost`)"
+            - "traefik.http.services.meilisearch.loadbalancer.server.port=7700"
         restart: on-failure
 
     mailpit:
@@ -101,9 +136,14 @@ services:
             - 1025:1025
             - 8025:8025
         networks:
-            - local
+            - proxy
         restart: on-failure
-
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=proxy"
+            - "traefik.http.routers.mailpit.tls=true"
+            - "traefik.http.routers.mailpit.rule=Host(`mailpit.docker.localhost`)"
+            - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
     minio:
         image: minio/minio:latest
         container_name: minio
@@ -116,13 +156,18 @@ services:
         volumes:
             - ./docker-data/minio:/data/minio
         command: minio server /data/minio --console-address ":8900"
+        labels:
+            - "traefik.http.routers.minio.rule=Host(`minio.docker.localhost`)"
+            - "traefik.http.services.minio.loadbalancer.server.port=8900"
+            - "traefik.http.routers.s3.rule=Host(`s3.docker.localhost`)"
+            - "traefik.http.services.s3.loadbalancer.server.port=9000"
         healthcheck:
             test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
             retries: 3
             timeout: 5s
         networks:
-            - local
+            - proxy
         restart: on-failure
 networks:
-    local:
-        driver: bridge
+  proxy:
+    external: true
