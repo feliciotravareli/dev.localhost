@@ -8,15 +8,15 @@ http:
                     - main: "docker.localhost"
                       sans: "*.docker.localhost"
 
-        laravel:
+        local:
             rule: "HostRegexp(`dev.localhost`, `{subdomain:[a-z]+}.dev.localhost`)"
-            service: "laravel"
+            service: "local"
             tls:
                 domains:
                     - main: "dev.localhost"
                       sans: "*.dev.localhost"
     services:
-        laravel:
+        local:
             loadBalancer:
                 servers:
                     - url: "http://host.docker.internal:8000/"
