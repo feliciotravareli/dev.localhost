@@ -1,18 +1,26 @@
 http:
-  routers:
-    traefik:
-      rule: "Host(`traefik.docker.localhost`)"
-      service: "api@internal"
-      tls:
-        domains:
-          - main: "docker.localhost"
-            sans:
-              - "*.docker.localhost"
-          - main: "dev.localhost"
-            sans:
-              - "*.dev.localhost"
+    routers:
+        traefik:
+            rule: "Host(`traefik.docker.localhost`)"
+            service: "api@internal"
+            tls:
+                domains:
+                    - main: "docker.localhost"
+                      sans: "*.docker.localhost"
 
+        laravel:
+            rule: "HostRegexp(`dev.localhost`, `{subdomain:[a-z]+}.dev.localhost`)"
+            service: "laravel"
+            tls:
+                domains:
+                    - main: "dev.localhost"
+                      sans: "*.dev.localhost"
+    services:
+        laravel:
+            loadBalancer:
+                servers:
+                    - url: "http://host.docker.internal:8000/"
 tls:
-  certificates:
-    - certFile: "/etc/certs/local-cert.pem"
-      keyFile: "/etc/certs/local-key.pem"
+    certificates:
+        - certFile: "/etc/certs/local-cert.pem"
+          keyFile: "/etc/certs/local-key.pem"
