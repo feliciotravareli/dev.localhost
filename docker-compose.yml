@@ -3,18 +3,18 @@ services:
     traefik:
         image: traefik:v2.9
         container_name: traefik
-        restart: unless-stopped
         ports:
             - "80:80" # The HTTP port
             - "443:443" # The HTTPS port
             - "8080:8080" # The Web UI (enabled by --api.insecure=true)
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro # So that Traefik can listen to the Docker events
             - ./config/static.yml:/etc/traefik/traefik.yml:ro
             - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
             - ./certs:/etc/certs:ro
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        restart: unless-stopped
         network_mode: host # linux only
         # networks: # windows only
         #     - proxy
@@ -37,7 +37,6 @@ services:
             - "traefik.http.routers.portainer.rule=Host(`portainer.docker.localhost`)"
             - "traefik.http.services.portainer.loadbalancer.server.scheme=https"
             - "traefik.http.services.portainer.loadbalancer.server.port=9443"
-
         restart: unless-stopped
         networks:
             - proxy
@@ -47,6 +46,9 @@ services:
         container_name: mariadb
         ports:
             - 3306:3306
+        command: --max_allowed_packet=1073741824 # 1GB
+        volumes:
+            - ./docker-data/mariadb:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: 'password'
             MYSQL_ROOT_HOST: '%'
@@ -54,17 +56,14 @@ services:
             MYSQL_USER: 'laravel'
             MYSQL_PASSWORD: 'password'
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-        volumes:
-            - ./docker-data/mariadb:/var/lib/mysql
-        command: --max_allowed_packet=1073741824 # 1GB
         #docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database bd_destino' < /home/.../dump.sql
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-ppassword"]
             retries: 3
             timeout: 5s
+        restart: unless-stopped
         networks:
             - proxy
-        restart: unless-stopped
 
     redis:
         image: redis:alpine
@@ -77,25 +76,25 @@ services:
             test: [ "CMD", "redis-cli", "ping" ]
             retries: 3
             timeout: 5s
+        restart: on-failure
         networks:
             - proxy
-        restart: on-failure
 
     soketi:
         image: quay.io/soketi/soketi:latest-16-alpine
         container_name: soketi
+        ports:
+            - 6001:6001
+            - 9601:9601
         environment:
             SOKETI_DEBUG: 1
             SOKETI_METRICS_SERVER_PORT: 9601
             DEFAULT_APP_ID: 'app-id'
             DEFAULT_APP_KEY: 'app-key'
             DEFAULT_APP_SECRET: 'app-secret'
-        ports:
-            - 6001:6001
-            - 9601:9601
+        restart: on-failure
         networks:
             - proxy
-        restart: on-failure
 
     meilisearch:
         image: getmeili/meilisearch:latest
@@ -104,19 +103,19 @@ services:
             - 7700:7700
         volumes:
             - ./docker-data/meilisearch:/meili_data
-        healthcheck:
-            test: ["CMD", "wget", "--no-verbose", "--spider",  "http://meilisearch.docker.localhost:7700/health"]
-            retries: 3
-            timeout: 5s
-        networks:
-            - proxy
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=proxy"
             - "traefik.http.routers.meilisearch.tls=true"
             - "traefik.http.routers.meilisearch.rule=Host(`meilisearch.docker.localhost`)"
             - "traefik.http.services.meilisearch.loadbalancer.server.port=7700"
+        healthcheck:
+            test: ["CMD", "wget", "--no-verbose", "--spider",  "http://meilisearch.docker.localhost:7700/health"]
+            retries: 3
+            timeout: 5s
         restart: on-failure
+        networks:
+            - proxy
         depends_on:
             - traefik
 
@@ -132,9 +131,9 @@ services:
             - "traefik.http.routers.mailpit.tls=true"
             - "traefik.http.routers.mailpit.rule=Host(`mailpit.docker.localhost`)"
             - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
+        restart: on-failure
         networks:
             - proxy
-        restart: on-failure
         depends_on:
             - traefik
 
@@ -144,12 +143,12 @@ services:
         ports:
             - 9000:9000
             - 8900:8900
+        command: minio server /data/minio --console-address ":8900"
+        volumes:
+            - ./docker-data/minio:/data/minio
         environment:
             MINIO_ROOT_USER: 'admin'
             MINIO_ROOT_PASSWORD: 'password'
-        volumes:
-            - ./docker-data/minio:/data/minio
-        command: minio server /data/minio --console-address ":8900"
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=proxy"
@@ -160,9 +159,9 @@ services:
             test: [ "CMD", "curl", "-f", "http://minio.docker.localhost:9000/minio/health/live" ]
             retries: 3
             timeout: 5s
+        restart: on-failure
         networks:
             - proxy
-        restart: on-failure
         depends_on:
             - traefik
 networks:
