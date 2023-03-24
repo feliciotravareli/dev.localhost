@@ -1,49 +1,25 @@
 version: "3"
 services:
     traefik:
-        # The official v2 Traefik docker image
         image: traefik:v2.9
         container_name: traefik
         restart: unless-stopped
-        security_opt:
-            - no-new-privileges:true
         ports:
             - "80:80" # The HTTP port
             - "443:443" # The HTTPS port
             - "8080:8080" # The Web UI (enabled by --api.insecure=true)
-        # command:
-        #     --global.sendAnonymousUsage=false
-        #     --api.dashboard=true
-        #     --api.debug=true
-        #     --api.insecure=true
-        #     --serversTransport.insecureSkipVerify=true
-        #     --providers.docker.endpoint="unix:///var/run/docker.sock"
-        #     --providers.docker.watch=true
-        #     --providers.docker.exposedByDefault=false
-        #     --entryPoints.web.address=:80
-        #     --entryPoints.websecure.address=:443
-        #     --entryPoints.websecure.http.tls=true
-        #     --log.level=DEBUG
-        #     --accesslog=true
-        # labels:
-        #     - traefik.enable=true
-        #     - traefik.http.routers.traefik.entrypoints=web,websecure
-        #     - traefik.http.routers.traefik.rule=Host(`traefik.docker.localhost`)
-        #     - traefik.http.routers.traefik.service=api@internal
-        #     - traefik.http.routers.traefik.tls.domains[0].main="docker.localhost"
-        #     - traefik.http.routers.traefik.tls.domains[0].sans="*.docker.localhost"
-        #     - traefik.http.routers.traefik.tls.domains[1].main="dev.localhost"
-        #     - traefik.http.routers.traefik.tls.domains[1].sans="*.dev.localhost"
-        #     - traefik.tls.certificates.certfile="/etc/certs/local-cert.pem"
-        #     - traefik.tls.certificates.keyFile="/etc/certs/local-key.pem"
-
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro # So that Traefik can listen to the Docker events
             - ./config/static.yml:/etc/traefik/traefik.yml:ro
             - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
             - ./certs:/etc/certs:ro
-        networks:
-            - proxy
+        network_mode: host # linux only
+        # networks: # windows only
+        #     - proxy
+
+
 
     portainer:
         image: portainer/portainer-ce:latest
@@ -129,7 +105,7 @@ services:
         volumes:
             - ./docker-data/meilisearch:/meili_data
         healthcheck:
-            test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
+            test: ["CMD", "wget", "--no-verbose", "--spider",  "http://meilisearch.docker.localhost:7700/health"]
             retries: 3
             timeout: 5s
         networks:
@@ -181,7 +157,7 @@ services:
             - "traefik.http.routers.minio.rule=Host(`minio.docker.localhost`)"
             - "traefik.http.services.minio.loadbalancer.server.port=8900"
         healthcheck:
-            test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+            test: [ "CMD", "curl", "-f", "http://minio.docker.localhost:9000/minio/health/live" ]
             retries: 3
             timeout: 5s
         networks:
