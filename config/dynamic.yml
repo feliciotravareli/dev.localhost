@@ -8,18 +8,42 @@ http:
                     - main: "docker.localhost"
                       sans: "*.docker.localhost"
 
-        local:
-            rule: "HostRegexp(`dev.localhost`, `{subdomain:[a-z]+}.dev.localhost`)"
-            service: "local"
+        apiDev:
+            rule: "HostRegexp(`api.{cidade:(mairipora|francodarocha|itanhaem)}.dev.localhost`)"
+            service: "api"
             tls:
                 domains:
                     - main: "dev.localhost"
                       sans: "*.dev.localhost"
+        apiProd:
+            rule: "HostRegexp(`api.{cidade:(mairipora|francodarocha|itanhaem)}.prod.localhost`)"
+            service: "api"
+            tls:
+                domains:
+                    - main: "prod.localhost"
+                      sans: "*.prod.localhost"
+        professor:
+            rule: "HostRegexp(`professor.{cidade:(mairipora|francodarocha|itanhaem)}.{env:(dev|prod)}.localhost`)"
+            service: "professor"
+            tls:
+                domains:
+                    - main: "dev.localhost"
+                      sans: "*.dev.localhost"
+                    - main: "prod.localhost"
+                      sans: "*.prod.localhost"
     services:
         local:
             loadBalancer:
                 servers:
                     - url: "http://host.docker.internal:8000/"
+        api:
+            loadBalancer:
+                servers:
+                    - url: "http://host.docker.internal:8085/"
+        professor:
+            loadBalancer:
+                servers:
+                    - url: "http://host.docker.internal:4200/"
 tls:
     certificates:
         - certFile: "/etc/certs/local-cert.pem"
