@@ -15,11 +15,9 @@ services:
         extra_hosts:
             - "host.docker.internal:host-gateway"
         restart: unless-stopped
-        network_mode: host # linux only
-        # networks: # windows only
-        #     - proxy
-
-
+        #network_mode: host # linux only
+        networks: # windows only
+            - proxy
 
     portainer:
         image: portainer/portainer-ce:latest
@@ -32,7 +30,6 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         labels:
             - "traefik.enable=true"
-            - "traefik.docker.network=proxy"
             - "traefik.http.routers.portainer.tls=true"
             - "traefik.http.routers.portainer.rule=Host(`portainer.docker.localhost`)"
             - "traefik.http.services.portainer.loadbalancer.server.scheme=https"
@@ -52,8 +49,8 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: 'password'
             MYSQL_ROOT_HOST: '%'
-            MYSQL_DATABASE: 'laravel'
-            MYSQL_USER: 'laravel'
+            MYSQL_DATABASE: 'local'
+            MYSQL_USER: 'admin'
             MYSQL_PASSWORD: 'password'
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         #docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database bd_destino' < /home/.../dump.sql
@@ -105,7 +102,6 @@ services:
             - ./docker-data/meilisearch:/meili_data
         labels:
             - "traefik.enable=true"
-            - "traefik.docker.network=proxy"
             - "traefik.http.routers.meilisearch.tls=true"
             - "traefik.http.routers.meilisearch.rule=Host(`meilisearch.docker.localhost`)"
             - "traefik.http.services.meilisearch.loadbalancer.server.port=7700"
@@ -127,7 +123,6 @@ services:
             - 8025:8025
         labels:
             - "traefik.enable=true"
-            - "traefik.docker.network=proxy"
             - "traefik.http.routers.mailpit.tls=true"
             - "traefik.http.routers.mailpit.rule=Host(`mailpit.docker.localhost`)"
             - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
@@ -151,7 +146,6 @@ services:
             MINIO_ROOT_PASSWORD: 'password'
         labels:
             - "traefik.enable=true"
-            - "traefik.docker.network=proxy"
             - "traefik.http.routers.minio.tls=true"
             - "traefik.http.routers.minio.rule=Host(`minio.docker.localhost`)"
             - "traefik.http.services.minio.loadbalancer.server.port=8900"
