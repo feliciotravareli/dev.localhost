@@ -1,1 +1,13 @@
-./certs/mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem "docker.localhost" "*.docker.localhost" "dev.localhost" "*.dev.localhost" "prod.localhost" "*.prod.localhost"  "*.mairipora.prod.localhost" "*.mairipora.dev.localhost" "*.francodarocha.prod.localhost" "*.francodarocha.dev.localhost" "*.itanhaem.prod.localhost" "*.itanhaem.dev.localhost" "mairipora.prod.localhost" "mairipora.dev.localhost" "francodarocha.prod.localhost" "francodarocha.dev.localhost" "itanhaem.prod.localhost" "itanhaem.dev.localhost"
+./certs/mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem \
+    "docker.localhost" "*.docker.localhost" \
+    "dev.localhost" "*.dev.localhost" \
+    "prod.localhost" "*.prod.localhost" \
+    "ext.localhost" "*.ext.localhost" \
+    "*.mairiporaeducasim.prod.localhost" "*.mairiporaeducasim.dev.localhost" "*.mairiporaeducasim.ext.localhost" \
+    "*.educafrancodarocha.prod.localhost" "*.educafrancodarocha.dev.localhost" "*.educafrancodarocha.ext.localhost" \
+    "*.educaita.prod.localhost" "*.educaita.dev.localhost" "*.educaita.ext.localhost" \
+    "*.educailhabela.prod.localhost"  "*.educailhabela.dev.localhost" "*.educailhabela.ext.localhost" \
+    "*.nilopoliseduca.prod.localhost" "*.nilopoliseduca.dev.localhost" "*.nilopoliseduca.ext.localhost" \
+    "*.educaitapecerica.prod.localhost" "*.educaitapecerica.dev.localhost" "*.educaitapecerica.ext.localhost" \
+    "*.segundotempoaruja.prod.localhost" "*.segundotempoaruja.dev.localhost" "*.segundotempoaruja.ext.localhost" \
+    "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost" \

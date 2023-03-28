@@ -10,67 +10,11 @@ http:
         local:
             rule: "HostRegexp(`dev.localhost`, `{subdomain:[a-z]+}.dev.localhost`)"
             service: "local"
-
-        apiDev:
-            rule: "HostRegexp(`api.{cidade:(mairipora|francodarocha|itanhaem)}.dev.localhost`)"
-            service: "api"
-            tls:
-                domains:
-                    - main: "dev.localhost"
-                      sans: "*.dev.localhost"
-                    - main: "mairipora.dev.localhost"
-                      sans: "*.mairipora.dev.localhost"
-                    - main: "francodarocha.dev.localhost"
-                      sans: "*.francodarocha.dev.localhost"
-                    - main: "itanhaem.dev.localhost"
-                      sans: "*.itanhaem.dev.localhost"
-        apiProd:
-            rule: "HostRegexp(`api.{cidade:(mairipora|francodarocha|itanhaem)}.prod.localhost`)"
-            service: "api"
-            tls:
-                domains:
-                    - main: "prod.localhost"
-                      sans: "*.prod.localhost"
-                    - main: "mairipora.prod.localhost"
-                      sans: "*.mairipora.prod.localhost"
-                    - main: "francodarocha.prod.localhost"
-                      sans: "*.francodarocha.prod.localhost"
-                    - main: "itanhaem.prod.localhost"
-                      sans: "*.itanhaem.prod.localhost"
-        professor:
-            rule: "HostRegexp(`professor.{cidade:(mairipora|francodarocha|itanhaem)}.{env:(dev|prod)}.localhost`)"
-            service: "professor"
-            tls:
-                domains:
-                    - main: "prod.localhost"
-                      sans: "*.prod.localhost"
-                    - main: "mairipora.prod.localhost"
-                      sans: "*.mairipora.prod.localhost"
-                    - main: "francodarocha.prod.localhost"
-                      sans: "*.francodarocha.prod.localhost"
-                    - main: "itanhaem.prod.localhost"
-                      sans: "*.itanhaem.prod.localhost"
-                    - main: "dev.localhost"
-                      sans: "*.dev.localhost"
-                    - main: "mairipora.dev.localhost"
-                      sans: "*.mairipora.dev.localhost"
-                    - main: "francodarocha.dev.localhost"
-                      sans: "*.francodarocha.dev.localhost"
-                    - main: "itanhaem.dev.localhost"
-                      sans: "*.itanhaem.dev.localhost"
     services:
         local:
             loadBalancer:
                 servers:
                     - url: "http://host.docker.internal:8000/"
-        api:
-            loadBalancer:
-                servers:
-                    - url: "http://host.docker.internal:8085/"
-        professor:
-            loadBalancer:
-                servers:
-                    - url: "http://host.docker.internal:4200/"
 tls:
     certificates:
         - certFile: "/etc/certs/local-cert.pem"

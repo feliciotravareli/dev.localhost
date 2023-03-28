@@ -13,13 +13,14 @@ providers:
         endpoint: "unix:///var/run/docker.sock"
         watch: true
         exposedByDefault: true
+        network: proxy
 
     file:
         filename: /etc/traefik/dynamic.yml
         watch: true
 
 log:
-    level: INFO
+    level: DEBUG
     format: common
 
 entryPoints:
