@@ -19,25 +19,6 @@ services:
         networks: # windows only
             - proxy
 
-    portainer:
-        image: portainer/portainer-ce:latest
-        container_name: portainer
-        ports:
-            - 9443:9443
-        command: --admin-password '$$2y$$05$$GIREErZJylvl7EnNeBO8nu9FgR5aDsa4oG5kNpSGPMNkW.GG6/9TS' #password
-        volumes:
-            - ./docker-data/portainer:/data
-            - /var/run/docker.sock:/var/run/docker.sock
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.portainer.tls=true"
-            - "traefik.http.routers.portainer.rule=Host(`portainer.docker.localhost`)"
-            - "traefik.http.services.portainer.loadbalancer.server.scheme=https"
-            - "traefik.http.services.portainer.loadbalancer.server.port=9443"
-        restart: unless-stopped
-        networks:
-            - proxy
-
     mariadb:
         image: mariadb:10.11
         container_name: mariadb
