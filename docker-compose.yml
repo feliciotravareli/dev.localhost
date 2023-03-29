@@ -27,7 +27,10 @@ services:
         command: --max_allowed_packet=1073741824 # 1GB
         volumes:
             - ./docker-data/mariadb:/var/lib/mysql
+        user: ${USER_ID:-1000}:${GROUP_ID:-1000}
         environment:
+            UID: ${USER_ID:-1000}
+            GID: ${GROUP_ID:-1000}
             MYSQL_ROOT_PASSWORD: 'password'
             MYSQL_ROOT_HOST: '%'
             MYSQL_DATABASE: 'local'
