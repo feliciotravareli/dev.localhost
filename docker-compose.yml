@@ -2,26 +2,33 @@ version: "3"
 services:
     traefik:
         image: traefik:v2.9
-        container_name: traefik
         ports:
             - "80:80" # The HTTP port
             - "443:443" # The HTTPS port
-            - "8080:8080" # The Web UI (enabled by --api.insecure=true)
+            - "8080:8080" # The Web UI
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro # So that Traefik can listen to the Docker events
-            - ./config/static.yml:/etc/traefik/traefik.yml:ro
-            - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
-            - ./certs:/etc/certs:ro
-        extra_hosts:
+            - ./ambiente/traefik-dynamic.yml:/etc/traefik/dynamic.yml:ro
+            - ./ambiente/certs:/etc/certs:ro
+        command:
+            - "--global.sendAnonymousUsage=false"
+            - "--api.dashboard=true"
+            - "--api.insecure=true"
+            - "--serversTransport.insecureSkipVerify=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.file.filename=/etc/traefik/dynamic.yml"
+            - "--providers.file.watch=true"
+            - "--log.level=DEBUG"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+        extra_hosts: #todo: check in windows/linux
             - "host.docker.internal:host-gateway"
         restart: unless-stopped
-        #network_mode: host # linux only
-        networks: # windows only
+        networks:
             - proxy
-
     mariadb:
         image: mariadb:10.11
-        container_name: mariadb
         ports:
             - 3306:3306
         command: --max_allowed_packet=1073741824 # 1GB
@@ -37,7 +44,8 @@ services:
             MYSQL_USER: 'admin'
             MYSQL_PASSWORD: 'password'
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-        #docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database bd_destino' < /home/.../dump.sql
+            #restaurar dump
+            #docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database bd_destino' < /home/.../dump.sql
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-ppassword"]
             retries: 3
@@ -45,6 +53,171 @@ services:
         restart: unless-stopped
         networks:
             - proxy
+    portainer:
+        image: portainer/portainer-ce:latest
+        ports:
+            - 9443:9443
+        command: --admin-password '$$2y$$05$$GIREErZJylvl7EnNeBO8nu9FgR5aDsa4oG5kNpSGPMNkW.GG6/9TS' #password
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./docker-data/portainer:/data
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.portainer.rule=Host(`portainer.docker.localhost`)"
+            - "traefik.http.routers.portainer.tls=true"
+            - "traefik.http.routers.portainer.tls.domains[0].main=portainer.docker.localhost"
+            - "traefik.http.services.portainer.loadbalancer.server.scheme=https"
+            - "traefik.http.services.portainer.loadbalancer.server.port=9443"
+        restart: unless-stopped
+        networks:
+            - proxy
+    api:
+        image: nginx:stable-alpine
+        ports:
+            - "8085:80"
+        restart: unless-stopped
+        volumes:
+            - ./api/public:/var/www/html/public:delegated
+            - ./ambiente/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+        depends_on:
+            - php-api
+            - traefik
+        networks:
+            - proxy
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=proxy"
+            - "traefik.http.routers.api.tls=true"
+            - "traefik.http.services.api.loadbalancer.server.scheme=http"
+            - "traefik.http.services.api.loadbalancer.server.port=8085"
+            - "traefik.http.routers.api.rule=HostRegexp(`api.{cidade:(mairiporaeducasim|educafrancodarocha|educaita|educailhabela|nilopoliseduca|educaitapecerica|escolaonlineguara|segundotempoaruja)}.{env:(dev|prod|ext)}.localhost`)"
+            - "traefik.http.routers.api.tls.domains[0].main=mairiporaeducasim.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[0].sans=api.mairiporaeducasim.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[1].main=mairiporaeducasim.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[1].sans=api.mairiporaeducasim.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[2].main=mairiporaeducasim.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[2].sans=api.mairiporaeducasim.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[3].main=educafrancodarocha.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[3].sans=api.educafrancodarocha.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[4].main=educafrancodarocha.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[4].sans=api.educafrancodarocha.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[5].main=educafrancodarocha.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[5].sans=api.educafrancodarocha.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[6].main=educaita.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[6].sans=api.educaita.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[7].main=educaita.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[7].sans=api.educaita.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[8].main=educaita.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[8].sans=api.educaita.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[9].main=educailhabela.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[9].sans=api.educailhabela.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[10].main=educailhabela.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[10].sans=api.educailhabela.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[11].main=educailhabela.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[11].sans=api.educailhabela.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[12].main=nilopoliseduca.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[12].sans=api.nilopoliseduca.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[13].main=nilopoliseduca.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[13].sans=api.nilopoliseduca.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[14].main=nilopoliseduca.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[14].sans=api.nilopoliseduca.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[15].main=educaitapecerica.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[15].sans=api.educaitapecerica.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[16].main=educaitapecerica.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[16].sans=api.educaitapecerica.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[17].main=educaitapecerica.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[17].sans=api.educaitapecerica.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[18].main=escolaonlineguara.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[18].sans=api.escolaonlineguara.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[19].main=escolaonlineguara.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[19].sans=api.escolaonlineguara.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[20].main=escolaonlineguara.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[20].sans=api.escolaonlineguara.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[21].main=segundotempoaruja.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[21].sans=api.segundotempoaruja.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[22].main=segundotempoaruja.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[22].sans=api.segundotempoaruja.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[23].main=segundotempoaruja.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[23].sans=api.segundotempoaruja.ext.localhost"
+    php-api:
+        build:
+            context: .
+            dockerfile: ./ambiente/php.dockerfile
+            args:
+                USER_ID: ${USER_ID:-1000}
+                GROUP_ID: ${GROUP_ID:-1000}
+        volumes:
+            - ./api:/var/www/html:delegated
+        restart: unless-stopped
+        networks:
+            - proxy
+    portal-professor:
+        image: node:16-alpine
+        user: node
+        working_dir: /app
+        volumes:
+            - ./portal-professor:/app
+        command: sh -c "npm install --legacy-peer-deps && npm run dev"
+        ports:
+            - "4200:4200"
+        restart: unless-stopped
+        networks:
+            - proxy
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=proxy"
+            - "traefik.http.services.portalprofessor.loadbalancer.server.scheme=http"
+            - "traefik.http.services.portalprofessor.loadbalancer.server.port=4200"
+            - "traefik.http.routers.portalprofessor.rule=HostRegexp(`professor.{cidade:(mairiporaeducasim|educafrancodarocha|educaita|educailhabela|nilopoliseduca|educaitapecerica|escolaonlineguara|segundotempoaruja)}.{env:(dev|prod|ext)}.localhost`)"
+            - "traefik.http.routers.portalprofessor.tls=true"
+            - "traefik.http.routers.portalprofessor.tls.domains[0].main=mairiporaeducasim.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[0].sans=professor.mairiporaeducasim.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[1].main=mairiporaeducasim.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[1].sans=professor.mairiporaeducasim.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[2].main=mairiporaeducasim.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[2].sans=professor.mairiporaeducasim.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[3].main=educafrancodarocha.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[3].sans=professor.educafrancodarocha.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[4].main=educafrancodarocha.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[4].sans=professor.educafrancodarocha.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[5].main=educafrancodarocha.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[5].sans=professor.educafrancodarocha.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[6].main=educaita.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[6].sans=professor.educaita.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[7].main=educaita.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[7].sans=professor.educaita.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[8].main=educaita.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[8].sans=professor.educaita.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[9].main=educailhabela.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[9].sans=professor.educailhabela.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[10].main=educailhabela.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[10].sans=professor.educailhabela.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[11].main=educailhabela.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[11].sans=professor.educailhabela.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[12].main=nilopoliseduca.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[12].sans=professor.nilopoliseduca.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[13].main=nilopoliseduca.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[13].sans=professor.nilopoliseduca.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[14].main=nilopoliseduca.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[14].sans=professor.nilopoliseduca.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[15].main=educaitapecerica.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[15].sans=professor.educaitapecerica.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[16].main=educaitapecerica.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[16].sans=professor.educaitapecerica.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[17].main=educaitapecerica.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[17].sans=professor.educaitapecerica.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[18].main=escolaonlineguara.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[18].sans=professor.escolaonlineguara.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[19].main=escolaonlineguara.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[19].sans=professor.escolaonlineguara.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[20].main=escolaonlineguara.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[20].sans=professor.escolaonlineguara.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[21].main=segundotempoaruja.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[21].sans=professor.segundotempoaruja.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[22].main=segundotempoaruja.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[22].sans=professor.segundotempoaruja.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[23].main=segundotempoaruja.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[23].sans=professor.segundotempoaruja.ext.localhost"
 
 networks:
   proxy:

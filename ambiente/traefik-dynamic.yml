@@ -1,0 +1,21 @@
+http:
+    routers:
+        traefik:
+            rule: "Host(`traefik.docker.localhost`)"
+            service: "api@internal"
+            tls:
+                domains:
+                    - main: "docker.localhost"
+                      sans: "*.docker.localhost"
+        local:
+            rule: "HostRegexp(`dev.localhost`, `{subdomain:[a-z]+}.dev.localhost`)"
+            service: "local"
+    services:
+        local:
+            loadBalancer:
+                servers:
+                    - url: "http://host.docker.internal:8000/"
+tls:
+    certificates:
+        - certFile: "/etc/certs/local-cert.pem"
+          keyFile: "/etc/certs/local-key.pem"
