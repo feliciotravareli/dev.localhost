@@ -3,8 +3,10 @@ o ambiente de desenvolvimento é composto por 3 repositórios:
     - [ambiente](https://git-codecommit.us-east-1.amazonaws.com/v1/repos/ambiente)
     - [api](https://git-codecommit.us-east-1.amazonaws.com/v1/repos/api)
     - [portal-professor](https://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-professor)
+
 O ambiente é a base para os demais repositórios, contendo as configurações de ambiente, docker-compose e scripts de inicialização.
 
+---
 
 ## 1. Preparando AMBIENTE inicial
 ### 1.1 clonar repositório do ambiente
@@ -18,8 +20,10 @@ O ambiente é a base para os demais repositórios, contendo as configurações d
 ```shell
     cd ambiente
 ```
+
+---
 ## 2. API
-    2.1 clonar repositorio da api
+### 2.1 clonar repositorio da api
 ```shell
     git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/api
 ```
@@ -36,6 +40,8 @@ para acessar a pasta no windows, basta executar o comando abaixo no terminal do 
 ```shell
     docker compose run --rm composer install
 ```
+
+---
 ## 3. portal-professor
 ### 3.1 clonar repositorio do portal-professor
 ```shell
@@ -51,9 +57,11 @@ export const environment: any = {
     production: false,
 };
 ```
-### 4. Certificados HTTPS [MKcert](https://github.com/FiloSottile/mkcert):
-#### 4.1 Baixar o aplicativo MKCERT no Windows WSL:
-#####
+
+---
+## 4. Certificados HTTPS [MKcert](https://github.com/FiloSottile/mkcert):
+### 4.1 Baixar o aplicativo MKCERT no Windows WSL:
+
 ```shell
 wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64
 
@@ -63,7 +71,7 @@ chmod +x ./ambiente/certs/mkcert
 
 ./ambiente/certs/mkcert --install
 ```
-#### 4.2 Gerar o certificado com os domínios desejados:
+### 4.2 Gerar o certificado com os domínios desejados:
 ```
 ./certs/mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem \
     "docker.localhost" "*.docker.localhost" \
@@ -79,18 +87,21 @@ chmod +x ./ambiente/certs/mkcert
     "*.segundotempoaruja.prod.localhost" "*.segundotempoaruja.dev.localhost" "*.segundotempoaruja.ext.localhost" \
     "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost" \
 ```
-#### 4.3 Instalar o rootCA no Windows
+### 4.3 Instalar o rootCA no Windows
 Por padrão o mkcert não instala o _rootCA_ no Windows, para isso é necessário executar o mkcert.exe do Windows. Antes, vamos anotar o diretório do rootCA instlado no passo anterior:
+
 ```shell
 mkcert -CAROOT
 ```
+
 Deve aparecer algo como:
+
 ```shell
 /home/UsernameLinux/.local/share/mkcert
 ```
-##### 4.4 Baixar o executável
+### 4.4 Baixar o executável
     -   [MKcert.exe](https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe)
-##### 4.5 Configurar o CAROOT nos navegadores do Windows
+### 4.5 Configurar o CAROOT nos navegadores do Windows
 No cmd.exe do Windows (rodando como Administrador), executar o comando, substituindo o "UsernameWindows" pelo nome do usuário do Windows e o caminho pelo caminho do CAROOT (4.3) gerado no WSL2:
 
 ```cmd
@@ -103,6 +114,7 @@ The local CA is now installed in the system trust store! ⚡️
 Note: Firefox support is not available on your platform. ℹ️
 ```
 
+---
 ## 5. Iniciando o ambiente
 ### 5.1 criar uma rede no docker para o proxy
 ```shell
@@ -113,7 +125,8 @@ docker network create proxy
 docker-compose up -d
 ```
 
-### 6. Ambientes disponíveis
+---
+## 6. Ambientes disponíveis
 ### 6.1 Infraestrutura
     - [Traefik](https://traefik.docker.localhost)
     - [Portainer](https://portainer.docker.localhost)
@@ -148,6 +161,8 @@ Endereços para acesso ao portal do professor de cada municipio, utilizando o __
     - [Guarátinguetá - Prof - PROD](https://professor.escolaonlineguara.prod.localhost)
     - [Arujá - Prof - DEV](https://professor.segundotempoaruja.prod.localhost)
     - [Itapecerica da Serra - Prof - PROD](https://professor.educaitapecerica.prod.localhost)
+
+---
 ## 7. Bancos de dados de Desenvolvimento (Fake)
 ### 7.1 Fazer o download de cada dump do [Google Drive](https://drive.google.com/drive/folders/1b58UVYG0KIHcdtW9XDQXbgCxkWWm4gcu?usp=share_link) e colocar na pasta `dumps`
 ### 7.2 Descompactar cada dump para o banco de dados
