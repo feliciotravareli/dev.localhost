@@ -20,8 +20,8 @@ services:
             - "--providers.file.filename=/etc/traefik/dynamic.yml"
             - "--providers.file.watch=true"
             - "--log.level=DEBUG"
-            - "--entrypoints.web.address=:80"
-            - "--entrypoints.websecure.address=:443"
+            - "--entryPoints.web.address=:80"
+            - "--entryPoints.websecure.address=:443"
         extra_hosts: #todo: check in windows/linux
             - "host.docker.internal:host-gateway"
         restart: unless-stopped
@@ -51,6 +51,8 @@ services:
             retries: 3
             timeout: 5s
         restart: unless-stopped
+        extra_hosts: #todo: check in windows/linux
+            - "host.docker.internal:host-gateway"
         networks:
             - proxy
     portainer:
