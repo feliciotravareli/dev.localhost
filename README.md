@@ -9,16 +9,16 @@ O ambiente é a base para os demais repositórios, contendo as configurações d
 ---
 
 ## 1. Preparando AMBIENTE inicial
-### 1.1 clonar repositório do ambiente
+### 1.1 clonar repositório dev.localhost
 
 ***AWS_USER_ID*** é o ID do usuário da AWS, que pode ser obtido no console da AWS, na aba IAM, na seção "Usuários", clicando no nome do usuário e copiando o ID do usuário.
 
 ```shell
-    git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/ambiente
+    git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/dev.localhost
 ```
 ### 1.2 entrar no diretório clonado
 ```shell
-    cd ambiente
+    cd dev.localhost
 ```
 
 ---
@@ -27,20 +27,29 @@ O ambiente é a base para os demais repositórios, contendo as configurações d
 ```shell
     git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/api
 ```
-### 2.2 entrar no diretório clonado
+### 2.2 entrar no diretório clonado e copiar os arquivos da pasta _"ambiente/envs"_ para dentro da pasta da _api_
 ```shell
     cd api
+
+    cp -r ../ambiente/envs/.* .
 ```
-### 2.3 descompactar o arquivo envs_dev.zip para dentro da pasta da api (recebido por email)
-para acessar a pasta no windows, basta executar o comando abaixo no terminal do WSL2:
+### 2.3 adicionar as chaves (_secrets_) recebidas por email no do arquivo __.env__ de __DENTRO__ da pasta __api__
 ```shell
-    explorer.exe .
+    nano ./api/.env
+```
+```dotenv
+APP_KEY="base64:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+JWT_SECRET="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+GOOGLE_MAPS_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 ### 2.4 instalar as dependencias do composer
 ```shell
     docker compose run --rm composer install
 ```
-
+### 2.5 voltar para a pasta "dev.localhost"
+```shell
+    cd ..
+```
 ---
 ## 3. portal-professor
 ### 3.1 clonar repositorio do portal-professor
