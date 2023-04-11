@@ -1,6 +1,6 @@
 # Setup Ambiente de Desenvolvimento
 o ambiente de desenvolvimento é composto por 3 repositórios:
-    - [ambiente](https://git-codecommit.us-east-1.amazonaws.com/v1/repos/ambiente)
+    - [ambiente](https://git-codecommit.us-east-1.amazonaws.com/v1/repos/dev.localhost)
     - [api](https://git-codecommit.us-east-1.amazonaws.com/v1/repos/api)
     - [portal-professor](https://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-professor)
 
@@ -76,13 +76,13 @@ wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.
 
 mv mkcert-v1.4.4-linux-amd64 ./ambiente/certs/mkcert
 
-chmod +x ./ambiente/certs/mkcert
+sudo chmod +x ./ambiente/certs/mkcert
 
 ./ambiente/certs/mkcert --install
 ```
 ### 4.2 Gerar o certificado com os domínios desejados:
 ```
-./certs/mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem \
+./ambiente/certs/mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem \
     "docker.localhost" "*.docker.localhost" \
     "dev.localhost" "*.dev.localhost" \
     "prod.localhost" "*.prod.localhost" \
@@ -109,12 +109,15 @@ Deve aparecer algo como:
 /home/UsernameLinux/.local/share/mkcert
 ```
 ### 4.4 Baixar o executável
-    -   [MKcert.exe](https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe)
+    - [MKcert.exe](https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe)
+    - renomear para "mkcert.exe"
+```
+ren "mkcert-v1.4.4-windows-amd64.exe" mkcert.exe
+```
 ### 4.5 Configurar o CAROOT nos navegadores do Windows
 No cmd.exe do Windows (rodando como Administrador), executar o comando, substituindo o "UsernameWindows" pelo nome do usuário do Windows e o caminho pelo caminho do CAROOT (4.3) gerado no WSL2:
 
 ```cmd
-C:\Users\UsernameWindows\Desktop> set CAROOT=\\wsl.localhost\Ubuntu\home\UsernameLinux\.local\share\mkcert
 C:\Users\UsernameWindows\Desktop> set CAROOT=\\wsl.localhost\Ubuntu\home\UsernameLinux\.local\share\mkcert
 C:\Users\UsernameWindows\Desktop> mkcert.exe -CAROOT
 C:\Users\UsernameWindows\Desktop> mkcert.exe -install
@@ -187,12 +190,12 @@ gzip -d ./dumps/itapecerica.sql.gz
 ```
 ### 7.3 Importar cada dump para o banco de dados
 ```shell
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database franco' < ./dumps/franco.sql
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database mairipora' < ./dumps/mairipora.sql
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database itanhaem' < ./dumps/itanhaem.sql
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database nilopolis' < ./dumps/nilopolis.sql
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database ilhabela' < ./dumps/ilhabela.sql
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database guaratingueta' < ./dumps/guaratingueta.sql
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database aruja' < ./dumps/aruja.sql
-docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database itapecerica' < ./dumps/itapecerica.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database franco' < ./dumps/franco.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database mairipora' < ./dumps/mairipora.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itanhaem' < ./dumps/itanhaem.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database nilopolis' < ./dumps/nilopolis.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database ilhabela' < ./dumps/ilhabela.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database guaratingueta' < ./dumps/guaratingueta.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database aruja' < ./dumps/aruja.sql
+docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itapecerica' < ./dumps/itapecerica.sql
 ```
