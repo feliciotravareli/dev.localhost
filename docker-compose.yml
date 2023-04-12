@@ -2,6 +2,7 @@ version: "3"
 services:
     traefik:
         image: traefik:v2.9
+        container_name: devlocalhost.traefik
         ports:
             - "80:80" # The HTTP port
             - "443:443" # The HTTPS port
@@ -28,6 +29,7 @@ services:
         networks:
             - proxy
     mariadb:
+        container_name: devlocalhost.mariadb
         image: mariadb:10.11
         ports:
             - 3306:3306
@@ -47,7 +49,7 @@ services:
             #restaurar dump
             #docker exec -i mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database bd_destino' < /home/.../dump.sql
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-ppassword"]
+            test: ["CMD", "mysqladmin", "ping","-uroot", "-ppassword"]
             retries: 3
             timeout: 5s
         restart: unless-stopped
@@ -57,6 +59,7 @@ services:
             - proxy
     portainer:
         image: portainer/portainer-ce:latest
+        container_name: devlocalhost.portainer
         ports:
             - 9443:9443
         command: --admin-password '$$2y$$05$$GIREErZJylvl7EnNeBO8nu9FgR5aDsa4oG5kNpSGPMNkW.GG6/9TS' #password
@@ -77,6 +80,7 @@ services:
             - proxy
     api:
         image: nginx:stable-alpine
+        container_name: devlocalhost.api
         ports:
             - "8085:80"
         restart: unless-stopped
@@ -150,6 +154,7 @@ services:
             args:
                 USER_ID: ${USER_ID:-1000}
                 GROUP_ID: ${GROUP_ID:-1000}
+        container_name: devlocalhost.php-api
         volumes:
             - ./api:/var/www/html:delegated
         restart: unless-stopped
@@ -157,6 +162,7 @@ services:
             - proxy
     portal-professor:
         image: node:16-alpine
+        container_name: devlocalhost.portal-professor
         user: node
         working_dir: /app
         volumes:

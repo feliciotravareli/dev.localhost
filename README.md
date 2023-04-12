@@ -185,12 +185,12 @@ gzip -d ./dumps/itapecerica.sql.gz
 ```
 ### 7.3 Importar cada dump para o banco de dados
 ```shell
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database franco' < ./dumps/franco.sql
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database mairipora' < ./dumps/mairipora.sql
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itanhaem' < ./dumps/itanhaem.sql
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database nilopolis' < ./dumps/nilopolis.sql
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database ilhabela' < ./dumps/ilhabela.sql
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database guaratingueta' < ./dumps/guaratingueta.sql
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database aruja' < ./dumps/aruja.sql
-docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itapecerica' < ./dumps/itapecerica.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database franco' < ./dumps/franco.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database mairipora' < ./dumps/mairipora.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database itanhaem' < ./dumps/itanhaem.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database nilopolis' < ./dumps/nilopolis.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database ilhabela' < ./dumps/ilhabela.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database guaratingueta' < ./dumps/guaratingueta.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database aruja' < ./dumps/aruja.sql
+docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database itapecerica' < ./dumps/itapecerica.sql
 ```
