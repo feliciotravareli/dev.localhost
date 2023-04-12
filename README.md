@@ -13,6 +13,8 @@ O ambiente é a base para os demais repositórios, contendo as configurações d
 
 ***AWS_USER_ID*** é o ID do usuário da AWS, que pode ser obtido no console da AWS, na aba IAM, na seção "Usuários", clicando no nome do usuário e copiando o ID do usuário.
 
+Escolha um diretório, preferencialmente sem espacos no nome, evitando por exemplo "Área de Trabalho" e execute o comando abaixo:
+
 ```shell
     git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/dev.localhost
 ```
@@ -21,17 +23,17 @@ O ambiente é a base para os demais repositórios, contendo as configurações d
     cd dev.localhost
 ```
 
+A partir daqui, levar em consideração que o diretório atual é o *"dev.localhost"*
+
 ---
 ## 2. API
 ### 2.1 clonar repositorio da api
 ```shell
     git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/api
 ```
-### 2.2 entrar no diretório clonado e copiar os arquivos da pasta _"ambiente/envs"_ para dentro da pasta da _api_
+### 2.2 copiar os arquivos da pasta _"ambiente/envs"_ para dentro da pasta da _"api"_
 ```shell
-    cd api
-
-    cp -r ../ambiente/envs/.* .
+    cp -r ./ambiente/envs/.* ./api/
 ```
 ### 2.3 adicionar as chaves (_secrets_) recebidas por email no do arquivo __.env__ de __DENTRO__ da pasta __api__
 ```shell
@@ -44,12 +46,9 @@ GOOGLE_MAPS_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 ### 2.4 instalar as dependencias do composer
 ```shell
-    docker compose run --rm composer install
+    docker compose -f ./api/docker-compose.yml run --rm composer install
 ```
-### 2.5 voltar para a pasta "dev.localhost"
-```shell
-    cd ..
-```
+
 ---
 ## 3. portal-professor
 ### 3.1 clonar repositorio do portal-professor
@@ -58,13 +57,9 @@ GOOGLE_MAPS_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 ### 3.2 criar o arquivo __environments/environment.dev.ts__ ("TODO": colocar arquivo no repositorio para nao precisar desse passo)
 ```
-code ./portal-professor/src/environments/environment.dev.ts
-```
-conteúdo:
-```ts
-export const environment: any = {
+echo "export const environment: any = {
     production: false,
-};
+};" > ./portal-professor/src/environments/environment2.dev.ts
 ```
 
 ---
@@ -190,12 +185,12 @@ gzip -d ./dumps/itapecerica.sql.gz
 ```
 ### 7.3 Importar cada dump para o banco de dados
 ```shell
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database franco' < ./dumps/franco.sql
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database mairipora' < ./dumps/mairipora.sql
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itanhaem' < ./dumps/itanhaem.sql
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database nilopolis' < ./dumps/nilopolis.sql
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database ilhabela' < ./dumps/ilhabela.sql
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database guaratingueta' < ./dumps/guaratingueta.sql
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database aruja' < ./dumps/aruja.sql
-docker exec -i mariadb sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itapecerica' < ./dumps/itapecerica.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database franco' < ./dumps/franco.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database mairipora' < ./dumps/mairipora.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itanhaem' < ./dumps/itanhaem.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database nilopolis' < ./dumps/nilopolis.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database ilhabela' < ./dumps/ilhabela.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database guaratingueta' < ./dumps/guaratingueta.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database aruja' < ./dumps/aruja.sql
+docker exec -i devlocalhost-mariadb-1 sh -c 'exec devlocalhost-mariadb1 -uroot -ppassword --max-allowed-packet=1073741824 --database itapecerica' < ./dumps/itapecerica.sql
 ```
