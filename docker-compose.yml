@@ -22,6 +22,8 @@ services:
             - "--providers.file.watch=true"
             - "--log.level=DEBUG"
             - "--entryPoints.web.address=:80"
+            - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+            - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
             - "--entryPoints.websecure.address=:443"
         extra_hosts: #todo: check in windows/linux
             - "host.docker.internal:host-gateway"
