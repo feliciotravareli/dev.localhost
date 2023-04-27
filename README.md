@@ -7,6 +7,17 @@ o ambiente de desenvolvimento é composto por 3 repositórios:
 O ambiente é a base para os demais repositórios, contendo as configurações de ambiente, docker-compose e scripts de inicialização.
 
 ---
+## 0. Instalando dependencias
+- WSL (pelo powershell como admin executar)
+```
+wsl --install
+```
+
+- Docker Desktop
+    - [Windows](https://docs.docker.com/docker-for-windows/install/)
+    - [Mac](https://docs.docker.com/docker-for-mac/install/)
+    - [Linux](https://docs.docker.com/engine/install/ubuntu/)
+
 
 ## 1. Preparando AMBIENTE inicial
 ### 1.1 clonar repositório dev.localhost
@@ -89,13 +100,13 @@ sudo chmod +x ./ambiente/certs/mkcert
     "*.nilopoliseduca.prod.localhost" "*.nilopoliseduca.dev.localhost" "*.nilopoliseduca.ext.localhost" \
     "*.educaitapecerica.prod.localhost" "*.educaitapecerica.dev.localhost" "*.educaitapecerica.ext.localhost" \
     "*.segundotempoaruja.prod.localhost" "*.segundotempoaruja.dev.localhost" "*.segundotempoaruja.ext.localhost" \
-    "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost" \
+    "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost"
 ```
 ### 4.3 Instalar o rootCA no Windows
 Por padrão o mkcert não instala o _rootCA_ no Windows, para isso é necessário executar o mkcert.exe do Windows. Antes, vamos anotar o diretório do rootCA instlado no passo anterior:
 
 ```shell
-mkcert -CAROOT
+./ambiente/certs/mkcert -CAROOT
 ```
 
 Deve aparecer algo como:
@@ -129,7 +140,7 @@ docker network create proxy
 ```
 ### 5.2 subir todo o sistema
 ```shell
-docker-compose up -d
+docker compose up -d
 ```
 
 ---
