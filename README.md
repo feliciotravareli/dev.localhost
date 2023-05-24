@@ -70,7 +70,7 @@ GOOGLE_MAPS_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 echo "export const environment: any = {
     production: false,
-};" > ./portal-professor/src/environments/environment2.dev.ts
+};" > ./portal-professor/src/environments/environment.dev.ts
 ```
 
 ---
@@ -88,7 +88,7 @@ sudo chmod +x ./ambiente/certs/mkcert
 ```
 ### 4.2 Gerar o certificado com os domínios desejados:
 ```
-./ambiente/certs/mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem \
+./ambiente/certs/mkcert -cert-file ./ambiente/certs/local-cert.pem -key-file ./ambiente/certs/local-key.pem \
     "docker.localhost" "*.docker.localhost" \
     "dev.localhost" "*.dev.localhost" \
     "prod.localhost" "*.prod.localhost" \
