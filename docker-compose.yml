@@ -27,6 +27,7 @@ services:
             - "--entryPoints.websecure.address=:443"
         extra_hosts: #todo: check in windows/linux
             - "host.docker.internal:host-gateway"
+            - "kubernetes.docker.internal:host-gateway"
         restart: unless-stopped
         networks:
             - proxy
@@ -57,6 +58,7 @@ services:
         restart: unless-stopped
         extra_hosts: #todo: check in windows/linux
             - "host.docker.internal:host-gateway"
+            - "kubernetes.docker.internal:host-gateway"
         networks:
             - proxy
     portainer:
@@ -163,6 +165,9 @@ services:
         restart: unless-stopped
         networks:
             - proxy
+        extra_hosts: #todo: check in windows/linux
+            - "host.docker.internal:host-gateway"
+            - "kubernetes.docker.internal:host-gateway"
     portal-professor:
         image: node:18-alpine
         container_name: devlocalhost.portal-professor
