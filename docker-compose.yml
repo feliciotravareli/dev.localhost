@@ -163,6 +163,9 @@ services:
         volumes:
             - ./api:/var/www/html:delegated
         restart: unless-stopped
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+            - "kubernetes.docker.internal:host-gateway"
         networks:
             - proxy
         extra_hosts: #todo: check in windows/linux
