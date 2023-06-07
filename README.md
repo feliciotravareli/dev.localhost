@@ -100,7 +100,9 @@ sudo chmod +x ./ambiente/certs/mkcert
     "*.nilopoliseduca.prod.localhost" "*.nilopoliseduca.dev.localhost" "*.nilopoliseduca.ext.localhost" \
     "*.educaitapecerica.prod.localhost" "*.educaitapecerica.dev.localhost" "*.educaitapecerica.ext.localhost" \
     "*.segundotempoaruja.prod.localhost" "*.segundotempoaruja.dev.localhost" "*.segundotempoaruja.ext.localhost" \
-    "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost"
+    "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost" \
+    "*.educapindamonhagaba.prod.localhost" "*.educapindamonhagaba.dev.localhost" "*.educapindamonhagaba.ext.localhost" \
+    "*.educaaruja.prod.localhost" "*.educaaruja.dev.localhost" "*.educaaruja.ext.localhost"
 ```
 ### 4.3 Instalar o rootCA no Windows
 Por padrão o mkcert não instala o _rootCA_ no Windows, para isso é necessário executar o mkcert.exe do Windows. Antes, vamos anotar o diretório do rootCA instlado no passo anterior:
