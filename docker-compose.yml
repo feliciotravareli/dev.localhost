@@ -187,7 +187,7 @@ services:
         working_dir: /app
         volumes:
             - ./portal-professor:/app
-        command: sh -c "npm install --legacy-peer-deps && npm run dev"
+        command: sh -c "npm ci --legacy-peer-deps && npm run dev"
         ports:
             - "4200:4200"
         restart: unless-stopped
@@ -270,7 +270,7 @@ services:
         working_dir: /app
         volumes:
             - ./portal-aluno:/app
-        command: sh -c "npm install --legacy-peer-deps && npm run dev"
+        command: sh -c "npm ci --legacy-peer-deps && npm run dev"
         ports:
             - "4201:4201"
         restart: unless-stopped

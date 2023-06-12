@@ -160,7 +160,9 @@ Endereços para acesso à API (backend) de cada municipio, utilizando a __API LO
     - [Ilhabela - API - DEV](https://api.educailhabela.dev.localhost)
     - [Guarátinguetá - API - DEV](https://api.escolaonlineguara.dev.localhost)
     - [Arujá - API - DEV](https://api.segundotempoaruja.dev.localhost)
+    - [Arujá - API - DEV](https://api.educaaruja.dev.localhost)
     - [Itapecerica da Serra - API - DEV](https://api.educaitapecerica.dev.localhost)
+    - [Pindamonhagaba - API - DEV](https://api.educapindamonhangaba.dev.localhost)
 ### 6.3 Desenvolvimento - Portal Professor
 Endereços para acesso ao portal do professor de cada municipio, utilizando o __Portal do Professor LOCAL__ e a __API LOCAL__
     - [Franco da Rocha - Prof - DEV](https://professor.educafrancodarocha.dev.localhost)
@@ -170,7 +172,9 @@ Endereços para acesso ao portal do professor de cada municipio, utilizando o __
     - [Ilhabela - Prof - DEV](https://professor.educailhabela.dev.localhost)
     - [Guarátinguetá - Prof - DEV](https://professor.escolaonlineguara.dev.localhost)
     - [Arujá - Prof - DEV](https://professor.segundotempoaruja.dev.localhost)
+    - [Arujá - Prof - DEV](https://professor.educaaruja.dev.localhost)
     - [Itapecerica da Serra - Prof - DEV](https://professor.educaitapecerica.dev.localhost)
+    - [Pindamonhagaba - Prof - DEV](https://professor.educapindamonhangaba.dev.localhost)
 ### 6.4 Produção - Portal Professor
 Endereços para acesso ao portal do professor de cada municipio, utilizando o __Portal do Professor LOCAL__ e a  __API DE PRODUÇÃO__
     - [Franco da Rocha - Prof - PROD](https://professor.educafrancodarocha.prod.localhost)
@@ -179,8 +183,10 @@ Endereços para acesso ao portal do professor de cada municipio, utilizando o __
     - [Nilópolis - Prof - PROD](https://professor.nilopoliseduca.prod.localhost)
     - [Ilhabela - Prof - PROD](https://professor.educailhabela.prod.localhost)
     - [Guarátinguetá - Prof - PROD](https://professor.escolaonlineguara.prod.localhost)
-    - [Arujá - Prof - DEV](https://professor.segundotempoaruja.prod.localhost)
+    - [Arujá - Prof - PROD](https://professor.segundotempoaruja.prod.localhost)
+    - [Arujá - Prof - PROD](https://professor.educaaruja.prod.localhost)
     - [Itapecerica da Serra - Prof - PROD](https://professor.educaitapecerica.prod.localhost)
+    - [Pindamonhagaba - Prof - PROD](https://professor.educapindamonhangaba.prod.localhost)
 
 ---
 ## 7. Bancos de dados de Desenvolvimento (Fake)
