@@ -70,7 +70,7 @@ GOOGLE_MAPS_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 echo "export const environment: any = {
     production: false,
-};" > ./portal-professor/src/environments/environment2.dev.ts
+};" > ./portal-professor/src/environments/environment.dev.ts
 ```
 
 ---
@@ -88,7 +88,7 @@ sudo chmod +x ./ambiente/certs/mkcert
 ```
 ### 4.2 Gerar o certificado com os domínios desejados:
 ```
-./ambiente/certs/mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem \
+./ambiente/certs/mkcert -cert-file ./ambiente/certs/local-cert.pem -key-file ./ambiente/certs/local-key.pem \
     "docker.localhost" "*.docker.localhost" \
     "dev.localhost" "*.dev.localhost" \
     "prod.localhost" "*.prod.localhost" \
@@ -100,7 +100,9 @@ sudo chmod +x ./ambiente/certs/mkcert
     "*.nilopoliseduca.prod.localhost" "*.nilopoliseduca.dev.localhost" "*.nilopoliseduca.ext.localhost" \
     "*.educaitapecerica.prod.localhost" "*.educaitapecerica.dev.localhost" "*.educaitapecerica.ext.localhost" \
     "*.segundotempoaruja.prod.localhost" "*.segundotempoaruja.dev.localhost" "*.segundotempoaruja.ext.localhost" \
-    "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost"
+    "*.escolaonlineguara.prod.localhost"  "*.escolaonlineguara.dev.localhost" "*.escolaonlineguara.ext.localhost" \
+    "*.educapindamonhagaba.prod.localhost" "*.educapindamonhagaba.dev.localhost" "*.educapindamonhagaba.ext.localhost" \
+    "*.educaaruja.prod.localhost" "*.educaaruja.dev.localhost" "*.educaaruja.ext.localhost"
 ```
 ### 4.3 Instalar o rootCA no Windows
 Por padrão o mkcert não instala o _rootCA_ no Windows, para isso é necessário executar o mkcert.exe do Windows. Antes, vamos anotar o diretório do rootCA instlado no passo anterior:
@@ -158,7 +160,9 @@ Endereços para acesso à API (backend) de cada municipio, utilizando a __API LO
     - [Ilhabela - API - DEV](https://api.educailhabela.dev.localhost)
     - [Guarátinguetá - API - DEV](https://api.escolaonlineguara.dev.localhost)
     - [Arujá - API - DEV](https://api.segundotempoaruja.dev.localhost)
+    - [Arujá - API - DEV](https://api.educaaruja.dev.localhost)
     - [Itapecerica da Serra - API - DEV](https://api.educaitapecerica.dev.localhost)
+    - [Pindamonhagaba - API - DEV](https://api.educapindamonhangaba.dev.localhost)
 ### 6.3 Desenvolvimento - Portal Professor
 Endereços para acesso ao portal do professor de cada municipio, utilizando o __Portal do Professor LOCAL__ e a __API LOCAL__
     - [Franco da Rocha - Prof - DEV](https://professor.educafrancodarocha.dev.localhost)
@@ -168,7 +172,9 @@ Endereços para acesso ao portal do professor de cada municipio, utilizando o __
     - [Ilhabela - Prof - DEV](https://professor.educailhabela.dev.localhost)
     - [Guarátinguetá - Prof - DEV](https://professor.escolaonlineguara.dev.localhost)
     - [Arujá - Prof - DEV](https://professor.segundotempoaruja.dev.localhost)
+    - [Arujá - Prof - DEV](https://professor.educaaruja.dev.localhost)
     - [Itapecerica da Serra - Prof - DEV](https://professor.educaitapecerica.dev.localhost)
+    - [Pindamonhagaba - Prof - DEV](https://professor.educapindamonhangaba.dev.localhost)
 ### 6.4 Produção - Portal Professor
 Endereços para acesso ao portal do professor de cada municipio, utilizando o __Portal do Professor LOCAL__ e a  __API DE PRODUÇÃO__
     - [Franco da Rocha - Prof - PROD](https://professor.educafrancodarocha.prod.localhost)
@@ -177,8 +183,10 @@ Endereços para acesso ao portal do professor de cada municipio, utilizando o __
     - [Nilópolis - Prof - PROD](https://professor.nilopoliseduca.prod.localhost)
     - [Ilhabela - Prof - PROD](https://professor.educailhabela.prod.localhost)
     - [Guarátinguetá - Prof - PROD](https://professor.escolaonlineguara.prod.localhost)
-    - [Arujá - Prof - DEV](https://professor.segundotempoaruja.prod.localhost)
+    - [Arujá - Prof - PROD](https://professor.segundotempoaruja.prod.localhost)
+    - [Arujá - Prof - PROD](https://professor.educaaruja.prod.localhost)
     - [Itapecerica da Serra - Prof - PROD](https://professor.educaitapecerica.prod.localhost)
+    - [Pindamonhagaba - Prof - PROD](https://professor.educapindamonhangaba.prod.localhost)
 
 ---
 ## 7. Bancos de dados de Desenvolvimento (Fake)

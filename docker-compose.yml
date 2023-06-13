@@ -102,7 +102,7 @@ services:
             - "traefik.docker.network=proxy"
             - "traefik.http.services.api.loadbalancer.server.scheme=http"
             - "traefik.http.services.api.loadbalancer.server.port=8085"
-            - "traefik.http.routers.api.rule=HostRegexp(`api.{cidade:(mairiporaeducasim|educafrancodarocha|educaita|educailhabela|nilopoliseduca|educaitapecerica|escolaonlineguara|segundotempoaruja)}.{env:(dev|prod|ext)}.localhost`)"
+            - "traefik.http.routers.api.rule=HostRegexp(`api.{cidade:(mairiporaeducasim|educafrancodarocha|educaita|educailhabela|nilopoliseduca|educaitapecerica|escolaonlineguara|segundotempoaruja|educaaruja|educapindamonhangaba)}.{env:(dev|prod|ext)}.localhost`)"
             - "traefik.http.routers.api.tls=true"
             - "traefik.http.routers.api.tls.domains[0].main=mairiporaeducasim.dev.localhost"
             - "traefik.http.routers.api.tls.domains[0].sans=api.mairiporaeducasim.dev.localhost"
@@ -152,6 +152,18 @@ services:
             - "traefik.http.routers.api.tls.domains[22].sans=api.segundotempoaruja.prod.localhost"
             - "traefik.http.routers.api.tls.domains[23].main=segundotempoaruja.ext.localhost"
             - "traefik.http.routers.api.tls.domains[23].sans=api.segundotempoaruja.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[24].main=educaaruja.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[24].sans=api.educaaruja.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[25].main=educaaruja.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[25].sans=api.educaaruja.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[26].main=educaaruja.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[26].sans=api.educaaruja.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[27].main=educapindamonhangaba.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[27].sans=api.educapindamonhangaba.dev.localhost"
+            - "traefik.http.routers.api.tls.domains[28].main=educapindamonhangaba.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[28].sans=api.educapindamonhangaba.prod.localhost"
+            - "traefik.http.routers.api.tls.domains[29].main=educapindamonhangaba.ext.localhost"
+            - "traefik.http.routers.api.tls.domains[29].sans=api.educapindamonhangaba.ext.localhost"
     php-api:
         build:
             context: .
@@ -178,7 +190,7 @@ services:
         working_dir: /app
         volumes:
             - ./portal-professor:/app
-        command: sh -c "npm install --legacy-peer-deps && npm run dev"
+        command: sh -c "npm ci --legacy-peer-deps && npm run dev"
         ports:
             - "4200:4200"
         restart: unless-stopped
@@ -192,7 +204,7 @@ services:
             - "traefik.docker.network=proxy"
             - "traefik.http.services.portalprofessor.loadbalancer.server.scheme=http"
             - "traefik.http.services.portalprofessor.loadbalancer.server.port=4200"
-            - "traefik.http.routers.portalprofessor.rule=HostRegexp(`professor.{cidade:(mairiporaeducasim|educafrancodarocha|educaita|educailhabela|nilopoliseduca|educaitapecerica|escolaonlineguara|segundotempoaruja)}.{env:(dev|prod|ext)}.localhost`)"
+            - "traefik.http.routers.portalprofessor.rule=HostRegexp(`professor.{cidade:(mairiporaeducasim|educafrancodarocha|educaita|educailhabela|nilopoliseduca|educaitapecerica|escolaonlineguara|segundotempoaruja|educaaruja|educapindamonhangaba)}.{env:(dev|prod|ext)}.localhost`)"
             - "traefik.http.routers.portalprofessor.tls=true"
             - "traefik.http.routers.portalprofessor.tls.domains[0].main=mairiporaeducasim.dev.localhost"
             - "traefik.http.routers.portalprofessor.tls.domains[0].sans=professor.mairiporaeducasim.dev.localhost"
@@ -242,7 +254,101 @@ services:
             - "traefik.http.routers.portalprofessor.tls.domains[22].sans=professor.segundotempoaruja.prod.localhost"
             - "traefik.http.routers.portalprofessor.tls.domains[23].main=segundotempoaruja.ext.localhost"
             - "traefik.http.routers.portalprofessor.tls.domains[23].sans=professor.segundotempoaruja.ext.localhost"
-
+            - "traefik.http.routers.portalprofessor.tls.domains[24].main=educaaruja.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[24].sans=professor.educaaruja.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[25].main=educaaruja.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[25].sans=professor.educaaruja.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[26].main=educaaruja.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[26].sans=professor.educaaruja.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[27].main=educapindamonhangaba.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[27].sans=professor.educapindamonhangaba.dev.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[28].main=educapindamonhangaba.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[28].sans=professor.educapindamonhangaba.prod.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[29].main=educapindamonhangaba.ext.localhost"
+            - "traefik.http.routers.portalprofessor.tls.domains[29].sans=professor.educapindamonhangaba.ext.localhost"
+    portal-aluno:
+        image: node:16-alpine
+        container_name: devlocalhost.portal-aluno
+        user: node
+        working_dir: /app
+        volumes:
+            - ./portal-aluno:/app
+        command: sh -c "npm ci --legacy-peer-deps && npm run dev"
+        ports:
+            - "4201:4201"
+        restart: unless-stopped
+        depends_on:
+            - traefik
+            - api
+        networks:
+            - proxy
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=proxy"
+            - "traefik.http.services.portalaluno.loadbalancer.server.scheme=http"
+            - "traefik.http.services.portalaluno.loadbalancer.server.port=4201"
+            - "traefik.http.routers.portalaluno.rule=HostRegexp(`alunos.{cidade:(mairiporaeducasim|educafrancodarocha|educaita|educailhabela|nilopoliseduca|educaitapecerica|escolaonlineguara|segundotempoaruja|educaaruja|educapindamonhangaba)}.{env:(dev|prod|ext)}.localhost`)"
+            - "traefik.http.routers.portalaluno.tls=true"
+            - "traefik.http.routers.portalaluno.tls.domains[0].main=mairiporaeducasim.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[0].sans=alunos.mairiporaeducasim.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[1].main=mairiporaeducasim.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[1].sans=alunos.mairiporaeducasim.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[2].main=mairiporaeducasim.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[2].sans=alunos.mairiporaeducasim.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[3].main=educafrancodarocha.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[3].sans=alunos.educafrancodarocha.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[4].main=educafrancodarocha.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[4].sans=alunos.educafrancodarocha.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[5].main=educafrancodarocha.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[5].sans=alunos.educafrancodarocha.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[6].main=educaita.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[6].sans=alunos.educaita.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[7].main=educaita.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[7].sans=alunos.educaita.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[8].main=educaita.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[8].sans=alunos.educaita.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[9].main=educailhabela.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[9].sans=alunos.educailhabela.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[10].main=educailhabela.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[10].sans=alunos.educailhabela.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[11].main=educailhabela.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[11].sans=alunos.educailhabela.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[12].main=nilopoliseduca.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[12].sans=alunos.nilopoliseduca.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[13].main=nilopoliseduca.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[13].sans=alunos.nilopoliseduca.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[14].main=nilopoliseduca.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[14].sans=alunos.nilopoliseduca.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[15].main=educaitapecerica.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[15].sans=alunos.educaitapecerica.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[16].main=educaitapecerica.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[16].sans=alunos.educaitapecerica.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[17].main=educaitapecerica.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[17].sans=alunos.educaitapecerica.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[18].main=escolaonlineguara.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[18].sans=alunos.escolaonlineguara.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[19].main=escolaonlineguara.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[19].sans=alunos.escolaonlineguara.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[20].main=escolaonlineguara.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[20].sans=alunos.escolaonlineguara.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[21].main=segundotempoaruja.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[21].sans=alunos.segundotempoaruja.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[22].main=segundotempoaruja.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[22].sans=alunos.segundotempoaruja.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[23].main=segundotempoaruja.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[23].sans=alunos.segundotempoaruja.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[24].main=educaaruja.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[24].sans=alunos.educaaruja.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[25].main=educaaruja.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[25].sans=alunos.educaaruja.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[26].main=educaaruja.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[26].sans=alunos.educaaruja.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[27].main=educapindamonhangaba.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[27].sans=alunos.educapindamonhangaba.dev.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[28].main=educapindamonhangaba.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[28].sans=alunos.educapindamonhangaba.prod.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[29].main=educapindamonhangaba.ext.localhost"
+            - "traefik.http.routers.portalaluno.tls.domains[29].sans=alunos.educapindamonhangaba.ext.localhost"
 networks:
   proxy:
     external: true
