@@ -1,9 +1,12 @@
 [submodule "api"]
 	path = api
 	url = ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/api
+	branch = develop
 [submodule "portal-professor"]
 	path = portal-professor
 	url = ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-professor
+    branch = develop
 [submodule "portal-aluno"]
 	path = portal-aluno
 	url = ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-aluno
+    branch = develop
