@@ -24,10 +24,17 @@ wsl --install
 
 ***AWS_USER_ID*** é o ID do usuário da AWS, que pode ser obtido no console da AWS, na aba IAM, na seção "Usuários", clicando no nome do usuário e copiando o ID do usuário.
 
+Configurar o Git para usar a chave/user da AWS adicionando o trecho abaixo no arquivo __~/.ssh/config__:
+```
+Host git-codecommit.*.amazonaws.com
+  User AWS_USER_ID
+  IdentityFile ~/.ssh/id_rsa
+```
+
 Escolha um diretório, preferencialmente sem espacos no nome, evitando por exemplo "Área de Trabalho" e execute o comando abaixo:
 
 ```shell
-    git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/dev.localhost
+    git clone ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/dev.localhost
 ```
 ### 1.2 entrar no diretório clonado
 ```shell
@@ -40,7 +47,7 @@ A partir daqui, levar em consideração que o diretório atual é o *"dev.localh
 ## 2. API
 ### 2.1 clonar repositorio da api
 ```shell
-    git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/api
+    git clone ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/api
 ```
 ### 2.2 copiar os arquivos da pasta _"ambiente/envs"_ para dentro da pasta da _"api"_
 ```shell
@@ -64,7 +71,7 @@ GOOGLE_MAPS_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ## 3. portal-professor
 ### 3.1 clonar repositorio do portal-professor
 ```shell
-    git clone ssh://AWS_USER_ID@git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-professor
+    git clone ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-professor
 ```
 ### 3.2 criar o arquivo __environments/environment.dev.ts__ ("TODO": colocar arquivo no repositorio para nao precisar desse passo)
 ```
@@ -73,9 +80,15 @@ echo "export const environment: any = {
 };" > ./portal-professor/src/environments/environment.dev.ts
 ```
 
+## 3. portal-aluno
+### 3.1 clonar repositorio do portal-aluno
+```shell
+    git clone ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-aluno
+```
+
 ---
-## 4. Certificados HTTPS [MKcert](https://github.com/FiloSottile/mkcert):
-### 4.1 Baixar o aplicativo MKCERT no Windows WSL:
+## 5. Certificados HTTPS [MKcert](https://github.com/FiloSottile/mkcert):
+### 5.1 Baixar o aplicativo MKCERT no Windows WSL:
 
 ```shell
 wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64
@@ -86,7 +99,7 @@ sudo chmod +x ./ambiente/certs/mkcert
 
 ./ambiente/certs/mkcert --install
 ```
-### 4.2 Gerar o certificado com os domínios desejados:
+### 5.2 Gerar o certificado com os domínios desejados:
 ```
 ./ambiente/certs/mkcert -cert-file ./ambiente/certs/local-cert.pem -key-file ./ambiente/certs/local-key.pem \
     "docker.localhost" "*.docker.localhost" \
@@ -104,7 +117,7 @@ sudo chmod +x ./ambiente/certs/mkcert
     "*.educapindamonhagaba.prod.localhost" "*.educapindamonhagaba.dev.localhost" "*.educapindamonhagaba.ext.localhost" \
     "*.educaaruja.prod.localhost" "*.educaaruja.dev.localhost" "*.educaaruja.ext.localhost"
 ```
-### 4.3 Instalar o rootCA no Windows
+### 5.3 Instalar o rootCA no Windows
 Por padrão o mkcert não instala o _rootCA_ no Windows, para isso é necessário executar o mkcert.exe do Windows. Antes, vamos anotar o diretório do rootCA instlado no passo anterior:
 
 ```shell
@@ -116,13 +129,13 @@ Deve aparecer algo como:
 ```shell
 /home/UsernameLinux/.local/share/mkcert
 ```
-### 4.4 Baixar o executável
+### 5.4 Baixar o executável
     - [MKcert.exe](https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe)
     - renomear para "mkcert.exe"
 ```
 ren "mkcert-v1.4.4-windows-amd64.exe" mkcert.exe
 ```
-### 4.5 Configurar o CAROOT nos navegadores do Windows
+### 5.5 Configurar o CAROOT nos navegadores do Windows
 No cmd.exe do Windows (rodando como Administrador), executar o comando, substituindo o "UsernameWindows" pelo nome do usuário do Windows e o caminho pelo caminho do CAROOT (4.3) gerado no WSL2:
 
 ```cmd
@@ -135,23 +148,23 @@ Note: Firefox support is not available on your platform. ℹ️
 ```
 
 ---
-## 5. Iniciando o ambiente
-### 5.1 criar uma rede no docker para o proxy
+## 6. Iniciando o ambiente
+### 6.1 criar uma rede no docker para o proxy
 ```shell
 docker network create proxy
 ```
-### 5.2 subir todo o sistema
+### 6.2 subir todo o sistema
 ```shell
 docker compose up -d
 ```
 
 ---
-## 6. Ambientes disponíveis
-### 6.1 Infraestrutura
+## 7. Ambientes disponíveis
+### 7.1 Infraestrutura
     - [Traefik](https://traefik.docker.localhost)
     - [Portainer](https://portainer.docker.localhost)
 
-### 6.2 Desenvolvimento - API
+### 7.2 Desenvolvimento - API
 Endereços para acesso à API (backend) de cada municipio, utilizando a __API LOCAL__ e o __BANCO DE DADOS LOCAL__
     - [Franco da Rocha - API - DEV](https://api.educafrancodarocha.dev.localhost)
     - [Mairiporã - API - DEV](https://api.mairiporaeducasim.dev.localhost)
@@ -163,7 +176,7 @@ Endereços para acesso à API (backend) de cada municipio, utilizando a __API LO
     - [Arujá - API - DEV](https://api.educaaruja.dev.localhost)
     - [Itapecerica da Serra - API - DEV](https://api.educaitapecerica.dev.localhost)
     - [Pindamonhagaba - API - DEV](https://api.educapindamonhangaba.dev.localhost)
-### 6.3 Desenvolvimento - Portal Professor
+### 7.3 Desenvolvimento - Portal Professor
 Endereços para acesso ao portal do professor de cada municipio, utilizando o __Portal do Professor LOCAL__ e a __API LOCAL__
     - [Franco da Rocha - Prof - DEV](https://professor.educafrancodarocha.dev.localhost)
     - [Mairiporã - Prof - DEV](https://professor.mairiporaeducasim.dev.localhost)
@@ -175,7 +188,7 @@ Endereços para acesso ao portal do professor de cada municipio, utilizando o __
     - [Arujá - Prof - DEV](https://professor.educaaruja.dev.localhost)
     - [Itapecerica da Serra - Prof - DEV](https://professor.educaitapecerica.dev.localhost)
     - [Pindamonhagaba - Prof - DEV](https://professor.educapindamonhangaba.dev.localhost)
-### 6.4 Produção - Portal Professor
+### 7.4 Produção - Portal Professor
 Endereços para acesso ao portal do professor de cada municipio, utilizando o __Portal do Professor LOCAL__ e a  __API DE PRODUÇÃO__
     - [Franco da Rocha - Prof - PROD](https://professor.educafrancodarocha.prod.localhost)
     - [Mairiporã - Prof - PROD](https://professor.mairiporaeducasim.prod.localhost)
@@ -189,9 +202,9 @@ Endereços para acesso ao portal do professor de cada municipio, utilizando o __
     - [Pindamonhagaba - Prof - PROD](https://professor.educapindamonhangaba.prod.localhost)
 
 ---
-## 7. Bancos de dados de Desenvolvimento (Fake)
-### 7.1 Fazer o download de cada dump do [Google Drive](https://drive.google.com/drive/folders/1b58UVYG0KIHcdtW9XDQXbgCxkWWm4gcu?usp=share_link) e colocar na pasta `dumps`
-### 7.2 Descompactar cada dump para o banco de dados
+## 8. Bancos de dados de Desenvolvimento (Fake)
+### 8.1 Fazer o download de cada dump do utilizando a url "/admin/dumps" em cada servidor de producao e colocar na pasta `dumps`
+### 8.2 Descompactar cada dump para o banco de dados
 ```shell
 gzip -d ./dumps/franco.sql.gz
 gzip -d ./dumps/mairipora.sql.gz
@@ -202,7 +215,7 @@ gzip -d ./dumps/guaratingueta.sql.gz
 gzip -d ./dumps/aruja.sql.gz
 gzip -d ./dumps/itapecerica.sql.gz
 ```
-### 7.3 Importar cada dump para o banco de dados
+### 8.3 Importar cada dump para o banco de dados
 ```shell
 docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database franco' < ./dumps/franco.sql
 docker exec -i devlocalhost.mariadb sh -c 'exec mariadb -uroot -ppassword --max-allowed-packet=1073741824 --database mairipora' < ./dumps/mairipora.sql
