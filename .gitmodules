@@ -2,8 +2,8 @@
 	path = api
 	url = ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/api
 [submodule "portal-professor"]
-	path = api
+	path = portal-professor
 	url = ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-professor
 [submodule "portal-aluno"]
-	path = api
+	path = portal-aluno
 	url = ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/portal-aluno
