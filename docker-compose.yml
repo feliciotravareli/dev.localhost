@@ -180,9 +180,6 @@ services:
             - "kubernetes.docker.internal:host-gateway"
         networks:
             - proxy
-        extra_hosts: #todo: check in windows/linux
-            - "host.docker.internal:host-gateway"
-            - "kubernetes.docker.internal:host-gateway"
     portal-professor:
         image: node:18-alpine
         container_name: devlocalhost.portal-professor
